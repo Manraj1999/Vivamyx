@@ -2,41 +2,41 @@
 
 class Database {
 
-    public $db_info = 'db_info.php';
-
-    function setDatabaseInfo($databaseName, $username, $password, $siteURL, $port) {
-        if(!file_exists($this->db_info)) {
-            $handle = fopen($this->db_info, 'w') or die();
-        } else {
-            $handle = fopen($this->db_info, 'w') or die('Unable to open the file: ' . $this->db_info);
-            fwrite($handle, 'Database: ' . $databaseName);
-            fwrite($handle, 'Username: ' . $username);
-            fwrite($handle, 'Password: ' . $password);
-            fwrite($handle, 'Site URL: ' . $siteURL);
-            fwrite($handle, 'Port: ' . $port);
-            fclose($handle);
-        }
-    }
-
-    function getDatabaseInfo() {
-        if(!file_exists($this->db_info)) {
-            die('File: ' . $this->db_info . ' - Does not exist');
-        } else {
-            $data = file($this->db_info);
-            foreach($data as $line_num=>$line) {
-                echo 'Line #' . $line_num . ': ' . $line;
-            }
-
-        }
-    }
-
-    // Ask for input every time this function is called
     function connectToDatabase() {
+        static $connection;
 
+        if(!isset($connection)) {
+           require '../Katana/config.php';
+
+           $host = DB_HOST;
+           $username = DB_USER;
+           $password = DB_PASSWORD;
+           $database = DB_DATABASE;
+
+           $connection = mysqli_connect($host, $username, $password, $database);
+        }
+
+        if($connection == false) {
+            echo 'An error occurred while connecting to the database.';
+            echo 'Error: ' . mysqli_connect_error();
+            echo 'Errno: ' . mysqli_connect_errno();
+        }
+
+        return $connection;
     }
 
     function getConnection() {
         return $this->connectToDatabase();
+    }
+
+    function disconnectFromDatabase() {
+        $connection = $this->getConnection();
+
+        if(isset($connection)) {
+            die('Connection to the database has been disconnected.');
+        } else {
+            echo 'There was no connection to end.';
+        }
     }
 
 }

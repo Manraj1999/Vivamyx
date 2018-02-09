@@ -1,17 +1,16 @@
 <?php
 
 include 'MySQL/Database.php';
+require 'Katana/config.php';
 
 class Vivamyx {
-
-    public $version = 1.0;
 
     function __construct() {
 
     }
 
     function getVersion() {
-        return $this->version;
+        return API_VERSION;
     }
 
     function getDatabase() {
@@ -19,8 +18,6 @@ class Vivamyx {
         return $DatabaseClass;
     }
 
-    function test() {
 
-    }
 
 }
